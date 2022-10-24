@@ -4,13 +4,10 @@
 function newCon($db = 'blog')
 {
     $VENV = parse_ini_file('.env');
-
     $host = $VENV['DBHOST'];
     $port = $VENV['DBPORT'];
-
     $username = $VENV['DBUSER'];
     $password = $VENV['DBPASS'];
-
     $dsn = $host . ':' . $port;
 
     $con = new mysqli($dsn, $username, $password, $db);
@@ -22,6 +19,46 @@ function newCon($db = 'blog')
     echo '<br> conectado com sucesso, ' . $_SESSION['name'] . '<br>';
     return $con;
 }
+
+// here will to be the query for cadastrate users
+function cadUser($con, $name, $email, $password)
+{
+    // $sql = "INSERT INTO users(username, email, user_pass) VALUES(username, email, pass);";
+    $stmt = $con->prepare("INSERT INTO blog.users(username, email, user_pass) VALUES (?, ?, ?)");
+    // $stmt = $con->prepare($sql);
+    try {
+        //code...
+        $stmt->bind_param('sss', $name, $email, $password);
+        $stmt->execute();
+        return $name;
+        return $email;
+        return $password;
+    } catch (mysqli_sql_exception $e) {
+        echo 'erro ao cadastrar: '.$e->getMessage();
+    }
+    
+    header('Location: ../login.php');
+}
+
+function accessUserInfor($con){
+    
+$query = "SELECT username, email, user_pass FROM blog.users";
+
+if ($stmt = mysqli_prepare($con, $query)) {
+
+    /* execute statement */
+    mysqli_stmt_execute($stmt);
+
+    /* bind result variables */
+    mysqli_stmt_bind_result($stmt, $name, $email, $password);
+
+    /* fetch values */
+    while (mysqli_stmt_fetch($stmt)) {     
+    }
+}
+
+}
+
 
 // create the databse and some tables
 function createdb($con)
@@ -54,10 +91,5 @@ function createdb($con)
 
     $con->query($blogtb);
 
-    $con->close();
-}
-
-// here will to be the query for cadastrate users
-function cadUser()
-{
+    // $con->close();
 }

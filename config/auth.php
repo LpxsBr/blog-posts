@@ -17,12 +17,14 @@ $usuarios = [
 
 # login validation basic
 
+
+
 if (isset($_GET['name']) and isset($_GET['pass'])) {
     $name = $_GET['name'];
     $pass = $_GET['pass'];
     foreach ($usuarios as $user) {
-        $userValide = $name === $user['email'];
-        $passValide = $pass === $user['senha'];
+        $userValide = $name === $email;
+        $passValide = $pass === $user_pass;
         if ($userValide && $passValide) {
             $_SESSION['error'] = null;
             $_SESSION['name'] = $user['name'];
